@@ -5,24 +5,31 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-// Middlewares
-app.use(cors());
+// ================= CORS FIX ==================
+app.use(cors({
+  origin: "*",
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type, Authorization"
+}));
+
 app.use(express.json());
 
-// MongoDB Connection
+// ================= MongoDB Connection ==================
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB Connected 🚀"))
   .catch((err) => console.log("MongoDB Error ❌:", err));
 
-// SCHEMAS
+
+// ================== SCHEMAS (UPDATED TO MATCH FRONTEND) ==================
 const projectSchema = new mongoose.Schema(
   {
     title: String,
     description: String,
-    image: String,
-    link: String,
-    tech: String,
+    imageUrl: String,
+    projectLink: String,
+    githubLink: String,
+    category: [String],     // category MUST be array for frontend
   },
   { timestamps: true }
 );
@@ -32,6 +39,7 @@ const contactSchema = new mongoose.Schema(
     name: String,
     email: String,
     message: String,
+    read: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
@@ -39,48 +47,97 @@ const contactSchema = new mongoose.Schema(
 const Project = mongoose.model("Project", projectSchema);
 const Contact = mongoose.model("Contact", contactSchema);
 
-// Admin Login API
+
+// ================== ADMIN LOGIN ==================
 app.post("/api/admin/login", (req, res) => {
   const { email, password } = req.body;
 
-  if (
-    email === process.env.ADMIN_EMAIL &&
-    password === process.env.ADMIN_PASSWORD
-  ) {
+  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
     return res.json({ success: true, message: "Login successful" });
   }
 
   return res.status(401).json({ success: false, message: "Invalid login" });
 });
 
-// GET All Projects
+
+// ================== GET PROJECTS ==================
 app.get("/api/projects", async (req, res) => {
-  const projects = await Project.find().sort({ createdAt: -1 });
-  res.json(projects);
+  try {
+    const projects = await Project.find().sort({ createdAt: -1 });
+    res.json(projects);
+  } catch (err) {
+    res.status(500).json({ error: "Cannot load projects" });
+  }
 });
 
-// ADD Project
+
+// ================== ADD PROJECT ==================
 app.post("/api/projects", async (req, res) => {
   try {
-    const project = new Project(req.body);
+    const project = new Project({
+      title: req.body.title,
+      description: req.body.description,
+      imageUrl: req.body.imageUrl,
+      projectLink: req.body.projectLink,
+      githubLink: req.body.githubLink,
+      category: req.body.category || []
+    });
+
     const saved = await project.save();
     res.status(201).json(saved);
+
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Project create failed" });
   }
 });
 
-// CONTACT FORM API
+
+// ================== DELETE PROJECT ==================
+app.delete("/api/projects/:id", async (req, res) => {
+  try {
+    await Project.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Delete failed" });
+  }
+});
+
+
+// ================== CONTACT FORM SAVE ==================
 app.post("/api/contacts", async (req, res) => {
   try {
-    const contact = new Contact(req.body);
-    const saved = await contact.save();
+    const saved = await new Contact(req.body).save();
     res.status(201).json(saved);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Contact failed" });
   }
 });
 
-// Server Start
+
+// ================== GET ALL CONTACT MESSAGES ==================
+app.get("/api/contacts", async (req, res) => {
+  try {
+    const messages = await Contact.find().sort({ createdAt: -1 });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: "Cannot load messages" });
+  }
+});
+
+
+// ================== MARK MESSAGE AS READ ==================
+app.put("/api/contacts/:id/read", async (req, res) => {
+  try {
+    await Contact.findByIdAndUpdate(req.params.id, { read: true });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Update failed" });
+  }
+});
+
+
+// ================== SERVER START ==================
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
