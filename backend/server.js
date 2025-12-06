@@ -1,191 +1,86 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
-const PORT = process.env.PORT || 5001;
 
-// Middleware
+// Middlewares
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.json());
 
-// Pre-set admin credentials
-const ADMIN_CREDENTIALS = {
-    email: "admin@kk.com",
-    password: "admin123"
-};
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("MongoDB Connected 🚀"))
+  .catch((err) => console.log("MongoDB Error ❌:", err));
 
-// Projects storage
-const PROJECTS_FILE = path.join(__dirname, 'projects.json');
+// SCHEMAS
+const projectSchema = new mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    image: String,
+    link: String,
+    tech: String,
+  },
+  { timestamps: true }
+);
 
-// Initialize projects file if it doesn't exist
-if (!fs.existsSync(PROJECTS_FILE)) {
-    fs.writeFileSync(PROJECTS_FILE, JSON.stringify([]));
-}
+const contactSchema = new mongoose.Schema(
+  {
+    name: String,
+    email: String,
+    message: String,
+  },
+  { timestamps: true }
+);
 
-// Login endpoint
-app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
+const Project = mongoose.model("Project", projectSchema);
+const Contact = mongoose.model("Contact", contactSchema);
 
-    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-        res.json({ 
-            success: true, 
-            message: "Login successful!",
-            redirectUrl: "/admin.html"
-        });
-    } else {
-        res.status(401).json({ 
-            success: false, 
-            message: "Invalid email or password" 
-        });
-    }
+// Admin Login API
+app.post("/api/admin/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (
+    email === process.env.ADMIN_EMAIL &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    return res.json({ success: true, message: "Login successful" });
+  }
+
+  return res.status(401).json({ success: false, message: "Invalid login" });
 });
 
-// Get all projects
-app.get('/api/projects', (req, res) => {
-    try {
-        const projectsData = fs.readFileSync(PROJECTS_FILE, 'utf8');
-        const projects = JSON.parse(projectsData);
-        res.json(projects);
-    } catch (error) {
-        res.status(500).json({ error: "Error reading projects" });
-    }
+// GET All Projects
+app.get("/api/projects", async (req, res) => {
+  const projects = await Project.find().sort({ createdAt: -1 });
+  res.json(projects);
 });
 
-// Delete project
-app.delete('/api/projects/:id', (req, res) => {
-    try {
-        const projectId = req.params.id;
-        const projectsData = fs.readFileSync(PROJECTS_FILE, 'utf8');
-        let projects = JSON.parse(projectsData);
-        
-        projects = projects.filter(project => project.id !== projectId);
-        fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2));
-        
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: "Error deleting project" });
-    }
+// ADD Project
+app.post("/api/projects", async (req, res) => {
+  try {
+    const project = new Project(req.body);
+    const saved = await project.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res.status(500).json({ error: "Project create failed" });
+  }
 });
 
-// Add new project
-app.post('/api/projects', (req, res) => {
-    try {
-        const { title, description, imageUrl, projectLink, githubLink, category } = req.body;
-        
-        const projectsData = fs.readFileSync(PROJECTS_FILE, 'utf8');
-        const projects = JSON.parse(projectsData);
-        
-        const newProject = {
-            id: Date.now().toString(),
-            title,
-            description,
-            imageUrl,
-            projectLink,
-            githubLink: githubLink || '', // Ensure githubLink is always present
-            category,
-            createdAt: new Date().toISOString()
-        };
-        
-        projects.push(newProject);
-        fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2));
-        
-        res.json({ success: true, project: newProject });
-    } catch (error) {
-        res.status(500).json({ error: "Error saving project" });
-    }
+// CONTACT FORM API
+app.post("/api/contacts", async (req, res) => {
+  try {
+    const contact = new Contact(req.body);
+    const saved = await contact.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res.status(500).json({ error: "Contact failed" });
+  }
 });
 
-// Contact storage
-const CONTACTS_FILE = path.join(__dirname, 'contacts.json');
-
-// Initialize contacts file if it doesn't exist
-if (!fs.existsSync(CONTACTS_FILE)) {
-    fs.writeFileSync(CONTACTS_FILE, JSON.stringify([]));
-}
-
-// Handle contact form submission (SINGLE ENDPOINT - REMOVED DUPLICATE)
-app.post('/api/contact', (req, res) => {
-    try {
-        const { name, email, subject, message } = req.body;
-        
-        console.log('Received contact form submission:', { name, email, subject, message });
-        
-        const contactsData = fs.readFileSync(CONTACTS_FILE, 'utf8');
-        const contacts = JSON.parse(contactsData);
-        
-        const newContact = {
-            id: Date.now().toString(),
-            name,
-            email,
-            subject,
-            message,
-            createdAt: new Date().toISOString(),
-            read: false
-        };
-        
-        contacts.push(newContact);
-        fs.writeFileSync(CONTACTS_FILE, JSON.stringify(contacts, null, 2));
-        
-        console.log('Contact message saved successfully');
-        
-        res.json({ success: true, message: "Message sent successfully!" });
-    } catch (error) {
-        console.error('Error saving contact:', error);
-        res.status(500).json({ error: "Error sending message" });
-    }
-});
-
-// Get all contact messages
-app.get('/api/contacts', (req, res) => {
-    try {
-        const contactsData = fs.readFileSync(CONTACTS_FILE, 'utf8');
-        const contacts = JSON.parse(contactsData);
-        res.json(contacts);
-    } catch (error) {
-        res.status(500).json({ error: "Error reading contacts" });
-    }
-});
-
-// Mark message as read
-app.put('/api/contacts/:id/read', (req, res) => {
-    try {
-        const contactId = req.params.id;
-        const contactsData = fs.readFileSync(CONTACTS_FILE, 'utf8');
-        let contacts = JSON.parse(contactsData);
-        
-        contacts = contacts.map(contact => 
-            contact.id === contactId ? { ...contact, read: true } : contact
-        );
-        
-        fs.writeFileSync(CONTACTS_FILE, JSON.stringify(contacts, null, 2));
-        
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error marking message as read:', error);
-        res.status(500).json({ error: "Error updating contact" });
-    }
-});
-
-// Delete contact message
-app.delete('/api/contacts/:id', (req, res) => {
-    try {
-        const contactId = req.params.id;
-        const contactsData = fs.readFileSync(CONTACTS_FILE, 'utf8');
-        let contacts = JSON.parse(contactsData);
-        
-        contacts = contacts.filter(contact => contact.id !== contactId);
-        fs.writeFileSync(CONTACTS_FILE, JSON.stringify(contacts, null, 2));
-        
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: "Error deleting contact" });
-    }
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Server Start
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

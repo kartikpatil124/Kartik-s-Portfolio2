@@ -2,6 +2,7 @@
 const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
 
 
+
 // DOM Elements
 let projects = []
 
