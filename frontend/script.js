@@ -46,7 +46,7 @@ function setupEventListeners() {
 // Load projects from backend
 async function loadProjects() {
   try {
-    const response = await fetch(`${API_BASE}/projects`)
+    const response = await fetch(`${API_BASE}/admin/login`)
     projects = await response.json()
     displayProjects(projects)
   } catch (error) {
@@ -131,7 +131,7 @@ async function handleLogin(event) {
   const loginError = document.getElementById("loginError")
 
   try {
-    const response = await fetch(`${API_BASE}/login`, {
+    const response = await fetch(`${API_BASE}/admin/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
