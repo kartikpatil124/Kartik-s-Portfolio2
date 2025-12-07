@@ -450,53 +450,22 @@
   </div>
 </div>
 
-<script>
-const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
 
-// Admin Login (same working script as other pages)
-document.getElementById("loginForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const loginError = document.getElementById("loginError");
-
-    try {
-        const response = await fetch(`${API_BASE}/admin/login`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
-            modal.hide();
-
-            // Redirect to admin panel
-            window.location.href = "admin.html";
-        } else {
-            loginError.textContent = data.message;
-            loginError.classList.remove("d-none");
-        }
-
-    } catch (err) {
-        loginError.textContent = "Network error.";
-        loginError.classList.remove("d-none");
-    }
-});
-</script>
 
 
 
     <!-- Bootstrap & JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+/* -------------------------------------------
+    BASE API URL
+-------------------------------------------- */
 const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
 
-// ⭐ FIXED CONTACT FORM HANDLER (ONLY ONE)
+/* -------------------------------------------
+    CONTACT FORM SUBMIT (FULLY FIXED)
+-------------------------------------------- */
 document.getElementById("contactForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -507,7 +476,6 @@ document.getElementById("contactForm").addEventListener("submit", async function
         message: document.getElementById("message").value.trim()
     };
 
-    // validate
     if (!contactData.name || !contactData.email || !contactData.subject || !contactData.message) {
         alert("Please fill all fields.");
         return;
@@ -535,19 +503,58 @@ document.getElementById("contactForm").addEventListener("submit", async function
     }
 });
 
-// ⭐ Remove admin calls (they BREAK the contact page)
-function logout() {
-    window.location.href = "index.html";
-}
-
-// ⭐ Copy-to-clipboard (this one is fine)
+/* -------------------------------------------
+    COPY TO CLIPBOARD
+-------------------------------------------- */
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
         const toast = new bootstrap.Toast(document.getElementById("copyToast"));
         toast.show();
     });
 }
+
+/* -------------------------------------------
+    ADMIN LOGIN (FULLY FIXED)
+-------------------------------------------- */
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value.trim();
+    const loginError = document.getElementById("loginError");
+
+    try {
+        const response = await fetch(`${API_BASE}/admin/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
+            modalInstance.hide();
+            window.location.href = "admin.html";
+        } else {
+            loginError.textContent = data.message;
+            loginError.classList.remove("d-none");
+        }
+
+    } catch (err) {
+        loginError.textContent = "Network error.";
+        loginError.classList.remove("d-none");
+    }
+});
+
+/* -------------------------------------------
+    LOGOUT FUNCTION (SAFE)
+-------------------------------------------- */
+function logout() {
+    window.location.href = "index.html";
+}
 </script>
+
 
 </body>
 </html> 
