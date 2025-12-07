@@ -540,6 +540,52 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAdminProjects();
     loadContactMessages();
 });
+
+
+
+// BASE URL FOR BACKEND
+const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
+
+// Handle Contact Form Submit
+document.getElementById("contactForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const contactData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        message: document.getElementById("message").value
+    };
+
+    console.log("Sending contact form:", contactData);
+
+    try {
+        const response = await fetch(`${API_BASE}/contacts`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(contactData)
+        });
+
+        const result = await response.json();
+        console.log("Response:", result);
+
+        if (result._id) {
+            alert("Message sent successfully!");
+            this.reset();
+        } else {
+            alert("Error sending message.");
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Server error. Please try again.");
+    }
+});
+
+// Admin login link
+document.getElementById("adminLoginBtn").addEventListener("click", () => {
+    window.location.href = "admin.html";
+});
+
     </script>
 </body>
 </html>
