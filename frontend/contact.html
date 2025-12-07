@@ -418,7 +418,7 @@
         </div>
     </div>
 
-    <!-- ADMIN LOGIN MODAL -->
+<!-- ADMIN LOGIN MODAL -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="background-color: #2d232e; color: white; border-radius: 15px;">
@@ -430,25 +430,29 @@
 
       <div class="modal-body">
         <form id="loginForm">
+          
+          <!-- ⭐ FIXED: UNIQUE ADMIN INPUT IDs ⭐ -->
           <div class="mb-3">
-            <label>Email</label>
-            <input type="email" id="email" class="form-control" placeholder="Enter admin email" required>
+            <label for="adminEmail" class="form-label">Email</label>
+            <input type="email" id="adminEmail" class="form-control" placeholder="Enter admin email" required>
           </div>
 
           <div class="mb-3">
-            <label>Password</label>
-            <input type="password" id="password" class="form-control" placeholder="Enter admin password" required>
+            <label for="adminPassword" class="form-label">Password</label>
+            <input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password" required>
           </div>
 
           <p id="loginError" class="text-danger d-none"></p>
 
           <button type="submit" class="btn btn-light w-100 mt-2">Login</button>
+
         </form>
       </div>
 
     </div>
   </div>
 </div>
+
 
 
 
