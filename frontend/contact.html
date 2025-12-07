@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Portfolio</title>
-    <!-- Bootstrap CSS -->
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  </head>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --onyx: #474448ff;
@@ -27,565 +23,224 @@
             --wenge: #534b52ff;
             --isabelline: #f1f0eaff;
         }
-        
+
         body {
             background-color: var(--raisin-black);
             color: var(--bone);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
         }
 
-            .navbar-custom {
-      width: 90% !important;
-      margin: 10px auto !important;
-      height: 80px !important;
-      border-radius: 15px !important;
-      background-color: var(--onyx);
-      font-family: "Instrument Serif", serif !important;
-      padding: 0 20px !important;
-    }
+        /* Navbar */
+        .navbar-custom {
+            width: 90%;
+            margin: 10px auto;
+            height: 80px;
+            border-radius: 15px;
+            background-color: var(--onyx);
+            font-family: "Instrument Serif", serif;
+            padding: 0 20px;
+        }
 
-    .navbar-brand {
-      color: var(--isabelline) !important;
-      font-size: 30px !important;
-      margin-left: 10px !important;
-      transition: 0.3s !important;
-    }
+        .navbar-brand,
+        .nav-link {
+            color: var(--isabelline) !important;
+            font-size: 30px;
+            transition: 0.3s;
+        }
 
-    .navbar-brand:hover {
-      text-shadow: 0px 0px 10px var(--bone) !important;
-    }
+        .navbar-brand:hover,
+        .nav-link:hover {
+            text-shadow: 0px 0px 10px var(--bone);
+        }
 
-    .navbar-nav .nav-link {
-      color: var(--isabelline) !important;
-      font-size: 30px !important;
-      font-style: italic !important;
-      transition: 0.3s !important;
-    }
+        .navbar-nav {
+            gap: 20px;
+        }
 
-    .navbar-nav .nav-link:hover {
-      text-shadow: 0px 0px 10px var(--bone) !important;
-    }
-
-    /* Adjust spacing */
-    .navbar-nav {
-      gap: 20px !important;
-      margin-right: 30px !important;
-    }
-
-    /* Toggler button customization */
-    .navbar-toggler {
-      border: none !important;
-      outline: none !important;
-      background-color: transparent !important;
-      filter: invert(100%) !important;
-    }
-
-    /* Make sure collapsed menu looks neat */
-    @media (max-width: 991px) {
-      .navbar-custom {
-        height: auto !important;
-        padding: 10px 20px !important;
-      }
-
-      .navbar-nav {
-        gap: 10px !important;
-        text-align: center !important;
-      }
-
-      .navbar-nav .nav-link {
-        font-size: 25px !important;
-      }
-    }
-
-        .nav-item .btn {
-      font-size: 20px !important;
-      border-radius: 25px !important;
-      padding: 5px 15px !important;
-      margin-top: 10px !important;
-      transition: 0.3s !important;
-    }
-    .contact-left{
-        background-color: var(--onyx) !important;
-    }
-        
         .contact-container {
             background-color: var(--onyx);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin: 30px 0;
             overflow: hidden;
-            margin-top: 30px;
-            margin-bottom: 30px;
         }
-        
-        .contact-header {
-            /* background-color: var(--wenge); */
-            color: var(--isabelline);
-            padding: 30px 20px;
-            text-align: center;
-        }
-        
-        .contact-header h1 {
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .contact-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .contact-info {
+
+        .contact-left {
             padding: 30px;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            padding: 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            background-color: rgba(71, 68, 72, 0.5);
-        }
-        
-        .contact-item:hover {
-            background-color: var(--wenge);
-            transform: translateY(-5px);
-        }
-        
-        .contact-icon {
-            width: 60px;
-            height: 60px;
-            background-color: var(--wenge);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 20px;
-            font-size: 1.5rem;
-            color: var(--isabelline);
-        }
-        
-        .contact-details h3 {
-            margin-bottom: 5px;
-            color: var(--isabelline);
-        }
-        
-        .contact-details p {
-            margin-bottom: 0;
             color: var(--bone);
         }
-        
-        .contact-form {
-            padding: 30px;
-            margin-top: 150px;
-            border-radius: 0 0 15px 15px;
-        }
-        .contact-right{
-            /* height: 100%; */
-            background-color: var(--wenge);
 
+        .contact-right {
+            background-color: var(--wenge);
+            padding: 40px;
         }
-        
+
         .form-control {
             background-color: var(--onyx);
             border: 1px solid var(--bone);
             color: var(--bone);
-            padding: 12px 15px;
-            margin-bottom: 20px;
         }
-        
-        .form-control:focus {
-            background-color: var(--onyx);
-            border-color: var(--isabelline);
-            color: var(--bone);
-            box-shadow: 0 0 0 0.25rem rgba(241, 240, 234, 0.25);
-        }
-        
-        .form-control::placeholder {
-            color: rgba(224, 221, 207, 0.6);
-        }
-        
+
         .btn-send {
             background-color: var(--bone);
             color: var(--raisin-black);
-            font-weight: 600;
             padding: 12px 30px;
-            border: none;
             border-radius: 30px;
-            transition: all 0.3s ease;
+            font-weight: 600;
         }
-        
-        .btn-send:hover {
-            background-color: var(--isabelline);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+        .contact-item {
+            background-color: rgba(71, 68, 72, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background-color: var(--onyx);
-            color: var(--bone);
-            border-radius: 50%;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        
-        .social-link:hover {
-            background-color: var(--bone);
-            color: var(--raisin-black);
-            transform: translateY(-5px);
-        }
-        
+
         .contact-map {
+            margin: 30px 0;
             height: 250px;
             background-color: var(--onyx);
             border-radius: 10px;
-            margin-top: 30px;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             color: var(--bone);
-            font-style: italic;
         }
-        
-        @media (min-width: 768px) {
-            .contact-container {
-                display: flex;
-            }
-            
-            .contact-left {
-                flex: 1;
-            }
-            
-            .contact-right {
-                flex: 1;
-            }
-            
-            .contact-form {
-                border-radius: 0 15px 15px 0;
-            }
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--bone);
-            color: var(--raisin-black);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1050;
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background-color: var(--onyx);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color: var(--bone);
+            margin-right: 10px;
         }
     </style>
 </head>
+
 <body>
 
-      <nav class="navbar navbar-expand-lg navbar-custom">
-    <a class="navbar-brand" href="#">Kartik Patil</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <a class="navbar-brand" href="#">Kartik Patil</a>
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="./index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="./about.html">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="./project.html">Projects</a></li>
-        <li class="nav-item"><a class="nav-link" href="./contact.html">Contact</a></li>
-        <li class="nav-item"><button class="btn btn-outline-light ms-1" data-bs-toggle="modal" data-bs-target="#loginModal">Admin Login</button></li>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-      </ul>
-    </div>
-  </nav>
+        <div id="navbarNav" class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li><a class="nav-link" href="./index.html">Home</a></li>
+                <li><a class="nav-link" href="./about.html">About</a></li>
+                <li><a class="nav-link" href="./project.html">Projects</a></li>
+                <li><a class="nav-link" href="./contact.html">Contact</a></li>
+                <li><button class="btn btn-outline-light" onclick="window.location.href='admin.html'">Admin Login</button></li>
+            </ul>
+        </div>
+    </nav>
 
+    <!-- CONTACT CONTAINER -->
     <div class="container">
-        <div class="contact-container">
-            <div class="contact-left">
-                <div class="contact-header">
-                    <h1>Get In Touch</h1>
-                    <p>I'd love to hear from you. Send me a message!</p>
+        <div class="contact-container d-flex flex-column flex-md-row">
+
+            <!-- LEFT SIDE -->
+            <div class="contact-left col-md-6">
+                <h1>Get In Touch</h1>
+                <p>I’d love to hear from you. Feel free to reach out anytime!</p>
+
+                <div class="contact-item">
+                    <h3><i class="fas fa-phone me-2"></i> Phone</h3>
+                    <p>+91 90812 79000</p>
                 </div>
-                
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Phone</h3>
-                            <p id="phone-text">+91 90812 79000</p>
-                            <button class="btn btn-sm mt-2" style="background-color: var(--bone); color: var(--raisin-black);" onclick="copyToClipboard('9081279000')">Copy Number</button>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Email</h3>
-                            <p id="email-text">kartik.patil3100@gmail.com</p>
-                            <button class="btn btn-sm mt-2" style="background-color: var(--bone); color: var(--raisin-black);" onclick="copyToClipboard('kartik.patil3100@gmail.com')">Copy Email</button>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fab fa-github"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>GitHub</h3>
-                            <p><a href="https://github.com/kartikpatil124" target="_blank" style="color: var(--bone);">github.com/kartikpatil124</a></p>
-                            <button class="btn btn-sm mt-2" style="background-color: var(--bone); color: var(--raisin-black);" onclick="window.open('https://github.com/kartikpatil124', '_blank')">Visit Profile</button>
-                        </div>
-                    </div>
-                    
-                    <div class="social-links">
-                        <a href="https://github.com/kartikpatil124" class="social-link" target="_blank">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                    </div>
+
+                <div class="contact-item">
+                    <h3><i class="fas fa-envelope me-2"></i> Email</h3>
+                    <p>kartik.patil3100@gmail.com</p>
+                </div>
+
+                <div class="contact-item">
+                    <h3><i class="fab fa-github me-2"></i> GitHub</h3>
+                    <p><a href="https://github.com/kartikpatil124" target="_blank" style="color: var(--bone)">github.com/kartikpatil124</a></p>
+                </div>
+
+                <div class="d-flex">
+                    <a class="social-link" href="https://github.com/kartikpatil124"><i class="fab fa-github"></i></a>
+                    <a class="social-link" href="#"><i class="fab fa-linkedin"></i></a>
+                    <a class="social-link" href="#"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
-            
-            <div class="contact-right">
-                <div class="contact-form">
-                    <h2 class="mb-4" style="color: var(--isabelline);">Send a Message</h2>
-                    <form id="contactForm">
-    <div class="mb-3">
-        <input type="text" class="form-control" id="name" placeholder="Your Name" required>
-    </div>
-    <div class="mb-3">
-        <input type="email" class="form-control" id="email" placeholder="Your Email" required>
-    </div>
-    <div class="mb-3">
-        <input type="text" class="form-control" id="subject" placeholder="Subject" required>
-    </div>
-    <div class="mb-3">
-        <textarea class="form-control" id="message" rows="5" placeholder="Your Message" required></textarea>
-    </div>
-    <button type="submit" class="btn btn-send">Send Message</button>
-</form>
-                </div>
+
+            <!-- RIGHT SIDE (FORM) -->
+            <div class="contact-right col-md-6">
+                <h2 class="mb-4">Send a Message</h2>
+
+                <form id="contactForm">
+                    <input type="text" id="name" class="form-control" placeholder="Your Name" required>
+
+                    <input type="email" id="email" class="form-control" placeholder="Your Email" required>
+
+                    <input type="text" id="subject" class="form-control" placeholder="Subject" required>
+
+                    <textarea id="message" class="form-control" rows="5" placeholder="Your Message" required></textarea>
+
+                    <button class="btn btn-send mt-3" type="submit">Send Message</button>
+                </form>
             </div>
+
         </div>
-        
+
         <div class="contact-map">
-            <p><i class="fas fa-map-marker-alt me-2"></i> Location information could go here</p>
-        </div>
-    </div>
-    
-    <div id="copyToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                Copied to clipboard!
-            </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <p><i class="fas fa-map-marker-alt"></i> Location map coming soon</p>
         </div>
     </div>
 
-    <!-- Bootstrap & JavaScript -->
+    <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FINAL WORKING CONTACT SCRIPT -->
     <script>
-        // Form submission handling
-        // Form submission handling
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    // Get form values - FIXED: Use correct IDs
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const subject = document.getElementById('subject').value.trim();
-    const message = document.getElementById('message').value.trim();
-    
-    // Validate form
-    if (!name || !email || !subject || !message) {
-        alert('Please fill in all fields');
-        return;
-    }
-    
-    console.log('Sending contact form:', { name, email, subject, message });
-    
-    try {
-        const response = await fetch('/api/contact', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                subject: subject,
-                message: message
-            })
+        const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
+
+        document.getElementById("contactForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const data = {
+                name: document.getElementById("name").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                subject: document.getElementById("subject").value.trim(),
+                message: document.getElementById("message").value.trim()
+            };
+
+            if (!data.name || !data.email || !data.subject || !data.message) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/contacts`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result._id) {
+                    alert("Message sent successfully!");
+                    this.reset();
+                } else {
+                    alert("Error sending message.");
+                }
+
+            } catch (err) {
+                console.error("Error:", err);
+                alert("Server error. Try again later.");
+            }
         });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert(`Thank you, ${name}! Your message has been sent. I'll get back to you soon.`);
-            document.getElementById('contactForm').reset();
-        } else {
-            alert('There was an error sending your message. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('There was an error sending your message. Please try again.');
-    }
-});
-        //     e.preventDefault();
-            
-        //     // Get form values
-        //     const name = document.getElementById('name').value;
-        //     const email = document.getElementById('email').value;
-        //     const subject = document.getElementById('subject').value;
-        //     const message = document.getElementById('message').value;
-            
-        //     // In a real application, you would send this data to a server
-        //     // For this example, we'll just show an alert
-        //     alert(`Thank you, ${name}! Your message has been sent. I'll get back to you soon.`);
-            
-        //     // Reset the form
-        //     document.getElementById('contactForm').reset();
-        // });
-        
-        // Copy to clipboard function
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                // Show toast notification
-                const toast = new bootstrap.Toast(document.getElementById('copyToast'));
-                toast.show();
-            }, function(err) {
-                console.error('Could not copy text: ', err);
-            });
-        }
-        
-        // Add animation to contact items on scroll
-        window.addEventListener('load', function() {
-            const contactItems = document.querySelectorAll('.contact-item');
-            contactItems.forEach((item, index) => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
-        });
-
-
-        // Form submission handling
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    // Get form values
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const subject = document.getElementById('subject').value;
-    const message = document.getElementById('message').value;
-    
-    try {
-        const response = await fetch('https://portfolio-backend1-0061.onrender.com/api/admin/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                subject: subject,
-                message: message
-            })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert(`Thank you, ${name}! Your message has been sent. I'll get back to you soon.`);
-            document.getElementById('contactForm').reset();
-        } else {
-            alert('There was an error sending your message. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('There was an error sending your message. Please try again.');
-    }
-});
-document.addEventListener('DOMContentLoaded', function() {
-    loadAdminProjects();
-    loadContactMessages();
-});
-
-
-
-// BASE URL FOR BACKEND
-const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
-
-// Handle Contact Form Submit
-document.getElementById("contactForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const contactData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        message: document.getElementById("message").value
-    };
-
-    console.log("Sending contact form:", contactData);
-
-    try {
-        const response = await fetch(`${API_BASE}/contacts`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(contactData)
-        });
-
-        const result = await response.json();
-        console.log("Response:", result);
-
-        if (result._id) {
-            alert("Message sent successfully!");
-            this.reset();
-        } else {
-            alert("Error sending message.");
-        }
-
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Server error. Please try again.");
-    }
-});
-
-// Admin login link
-document.getElementById("adminLoginBtn").addEventListener("click", () => {
-    window.location.href = "admin.html";
-});
-
     </script>
+
 </body>
 </html>
