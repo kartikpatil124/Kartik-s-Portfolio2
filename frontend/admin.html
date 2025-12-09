@@ -46,6 +46,40 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+
+    /* ============= NEW STYLES FOR IMAGE UPLOAD BOX ============= */
+    .upload-box {
+        width: 100%;
+        height: 130px;
+        border: 2px dashed #aaa;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #666;
+        cursor: pointer;
+        transition: 0.3s;
+        text-align: center;
+        padding: 10px;
+        font-size: 0.9rem;
+        background-color: #fdfdfd;
+        margin-top: 8px;
+    }
+    .upload-box:hover {
+        background: #f2f2f2;
+    }
+    .upload-box.dragover {
+        background: #e3ffe3;
+        border-color: #22aa22;
+        color: #22aa22;
+    }
+    #previewImage {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+        object-fit: cover;
+        max-height: 220px;
+    }
 </style>
 </head>
 
@@ -88,7 +122,20 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Image URL</label>
+                        <!-- OLD INPUT (UNCHANGED) -->
                         <input type="url" id="imageUrl" class="form-control" required>
+
+                        <!-- ========== NEW UPLOAD OPTIONS (ADDED) ========== -->
+                        <div class="upload-box" id="uploadBox">
+                            <div>
+                                <strong>Drag & Drop an image here</strong><br>
+                                or <u>click to select from your device</u><br>
+                                <small>(Uploads to Cloudinary & fills Image URL automatically)</small>
+                            </div>
+                            <input type="file" id="imageFile" accept="image/*" hidden>
+                        </div>
+                        <img id="previewImage" style="display:none;" alt="Image Preview">
+                        <!-- ========== END NEW UPLOAD UI ========== -->
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -150,7 +197,7 @@ document.getElementById("projectForm").addEventListener("submit", async function
     const newProject = {
         title: title.value,
         description: description.value,
-        imageUrl: imageUrl.value,
+        imageUrl: imageUrl.value,          // uses URL or uploaded image URL
         projectLink: projectLink.value,
         githubLink: githubLink.value || "",
         category: selectedCategories,
@@ -168,6 +215,10 @@ document.getElementById("projectForm").addEventListener("submit", async function
         if (result._id) {
             alert("Project added successfully!");
             this.reset();
+            // Reset preview too
+            const previewImage = document.getElementById("previewImage");
+            previewImage.style.display = "none";
+            previewImage.src = "";
             loadAdminProjects();
         } else {
             alert("Error adding project.");
@@ -303,7 +354,8 @@ async function markAsRead(id) {
 async function deleteContact(id) {
     if (!confirm("Delete this message?")) return;
     await fetch(`${API_BASE}/contacts/${id}`, { method: "DELETE" });
-    document.getElementById(`msg-${id}`).remove();
+    const el = document.getElementById(`msg-${id}`);
+    if (el) el.remove();
 }
 
 // ========================
@@ -311,6 +363,83 @@ async function deleteContact(id) {
 // ========================
 function logout() {
     window.location.href = "index.html";
+}
+
+// =====================================================
+// NEW: CLOUDINARY IMAGE UPLOAD (FILE + DRAG & DROP)
+// =====================================================
+
+// ✏️ REPLACE THESE WITH YOUR REAL CLOUDINARY VALUES
+const CLOUD_NAME = "YOUR_CLOUD_NAME";
+const UPLOAD_PRESET = "YOUR_UPLOAD_PRESET";
+
+const uploadBox = document.getElementById("uploadBox");
+const imageFileInput = document.getElementById("imageFile");
+const previewImage = document.getElementById("previewImage");
+const imageUrlInput = document.getElementById("imageUrl");
+
+// Click → open file picker
+uploadBox.addEventListener("click", () => {
+    imageFileInput.click();
+});
+
+// When file chosen
+imageFileInput.addEventListener("change", () => {
+    const file = imageFileInput.files[0];
+    if (file) {
+        uploadImageToCloudinary(file);
+    }
+});
+
+// Drag over
+uploadBox.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadBox.classList.add("dragover");
+});
+
+// Drag leave
+uploadBox.addEventListener("dragleave", () => {
+    uploadBox.classList.remove("dragover");
+});
+
+// Drop file
+uploadBox.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove("dragover");
+    const file = e.dataTransfer.files[0];
+    if (file) {
+        uploadImageToCloudinary(file);
+    }
+});
+
+async function uploadImageToCloudinary(file) {
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await res.json();
+        console.log("Cloudinary response:", data);
+
+        if (data.secure_url) {
+            // Show preview
+            previewImage.src = data.secure_url;
+            previewImage.style.display = "block";
+
+            // Fill into existing Image URL input
+            imageUrlInput.value = data.secure_url;
+        } else {
+            alert("Image upload failed. Check Cloudinary config.");
+        }
+    } catch (err) {
+        console.error("Cloudinary upload error:", err);
+        alert("Error uploading image.");
+    }
 }
 </script>
 
