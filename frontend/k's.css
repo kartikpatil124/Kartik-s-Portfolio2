@@ -13,14 +13,24 @@
 
 body {
   background-color: var(--raisin-black)!important;
-  overflow: hidden;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
+
+
+
+/* Use min-height instead of fixed height */
+.box3 { min-height: 550px !important; }
+.box4 { min-height: 300px !important; }
+.box5 { min-height: 300px !important; }
 
 a {
   text-decoration: none!important;
   color: var(--isabelline) !important;
   font-family: "Instrument Serif", serif !important;
 }
+
+
 
 
     .navbar-custom {
