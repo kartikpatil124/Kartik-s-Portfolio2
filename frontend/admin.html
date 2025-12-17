@@ -370,8 +370,7 @@ function logout() {
 // =====================================================
 
 // ✏️ REPLACE THESE WITH YOUR REAL CLOUDINARY VALUES
-const CLOUD_NAME = "YOUR_CLOUD_NAME";
-const UPLOAD_PRESET = "YOUR_UPLOAD_PRESET";
+
 
 const uploadBox = document.getElementById("uploadBox");
 const imageFileInput = document.getElementById("imageFile");
@@ -417,11 +416,6 @@ async function uploadImageToCloudinary(file) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", UPLOAD_PRESET);
-
-        const res = await fetch(`https://portfolio-backend1-0061.onrender.com/api`, {
-            method: "POST",
-            body: formData,
-        });
 
         const data = await res.json();
         console.log("Cloudinary response:", data);

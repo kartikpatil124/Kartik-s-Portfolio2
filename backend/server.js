@@ -142,9 +142,3 @@ app.put("/api/contacts/:id/read", async (req, res) => {
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-    cloud_name: "dlcvik37g",
-    api_key: "893991163719343",
-    api_secret: "YOUR_API_SECRET_HERE",  // <-- DO NOT SHARE PUBLICLY
-});
