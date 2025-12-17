@@ -1,7 +1,7 @@
 async function uploadImageToCloudinary(file) {
   try {
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", file); // MUST be "image"
 
     const res = await fetch(
       "https://portfolio-backend1-0061.onrender.com/api/upload-image",
@@ -18,11 +18,12 @@ async function uploadImageToCloudinary(file) {
       previewImage.style.display = "block";
       imageUrlInput.value = data.secure_url;
     } else {
-      alert("Upload failed");
+      alert("Image upload failed");
+      console.error(data);
     }
 
   } catch (err) {
-    console.error(err);
+    console.error("Upload error:", err);
     alert("Image upload error");
   }
 }
