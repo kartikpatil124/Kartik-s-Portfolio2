@@ -414,27 +414,32 @@ uploadBox.addEventListener("drop", (e) => {
 async function uploadImageToCloudinary(file) {
     try {
         const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", UPLOAD_PRESET);
+        formData.append("image", file);
+
+        const res = await fetch(
+            "https://portfolio-backend1-0061.onrender.com/api/upload-image",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
 
         const data = await res.json();
-        console.log("Cloudinary response:", data);
 
         if (data.secure_url) {
-            // Show preview
             previewImage.src = data.secure_url;
             previewImage.style.display = "block";
-
-            // Fill into existing Image URL input
             imageUrlInput.value = data.secure_url;
         } else {
-            alert("Image upload failed. Check Cloudinary config.");
+            alert("Upload failed");
+            console.error(data);
         }
     } catch (err) {
-        console.error("Cloudinary upload error:", err);
-        alert("Error uploading image.");
+        console.error("Upload error:", err);
+        alert("Image upload error");
     }
 }
+
 </script>
 
 </body>
