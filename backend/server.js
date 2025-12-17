@@ -2,6 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const uploadImageRoute = require("./api/upload-image");
+
+
+app.use("/api/upload-image", uploadImageRoute);
+
 
 const app = express();
 
