@@ -126,15 +126,8 @@
                         <input type="url" id="imageUrl" class="form-control" required>
 
                         <!-- ========== NEW UPLOAD OPTIONS (ADDED) ========== -->
-                        <div class="upload-box" id="uploadBox">
-                            <div>
-                                <strong>Drag & Drop an image here</strong><br>
-                                or <u>click to select from your device</u><br>
-                                <small>(Uploads to Cloudinary & fills Image URL automatically)</small>
-                            </div>
-                            <input type="file" id="imageFile" accept="image/*" hidden>
-                        </div>
-                        <img id="previewImage" style="display:none;" alt="Image Preview">
+                        
+                        
                         <!-- ========== END NEW UPLOAD UI ========== -->
                     </div>
 
@@ -371,45 +364,8 @@ function logout() {
 
 // ✏️ REPLACE THESE WITH YOUR REAL CLOUDINARY VALUES
 
-
-const uploadBox = document.getElementById("uploadBox");
-const imageFileInput = document.getElementById("imageFile");
-const previewImage = document.getElementById("previewImage");
-const imageUrlInput = document.getElementById("imageUrl");
-
-// Click → open file picker
-uploadBox.addEventListener("click", () => {
-    imageFileInput.click();
-});
-
-// When file chosen
-imageFileInput.addEventListener("change", () => {
-    const file = imageFileInput.files[0];
-    if (file) {
-        uploadImageToCloudinary(file);
-    }
-});
-
 // Drag over
-uploadBox.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    uploadBox.classList.add("dragover");
-});
 
-// Drag leave
-uploadBox.addEventListener("dragleave", () => {
-    uploadBox.classList.remove("dragover");
-});
-
-// Drop file
-uploadBox.addEventListener("drop", (e) => {
-    e.preventDefault();
-    uploadBox.classList.remove("dragover");
-    const file = e.dataTransfer.files[0];
-    if (file) {
-        uploadImageToCloudinary(file);
-    }
-});
 
 async function uploadImageToCloudinary(file) {
     try {

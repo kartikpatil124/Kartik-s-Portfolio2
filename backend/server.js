@@ -2,10 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const uploadImageRoute = require("./api/upload-image");
 
-
-app.use("/api/upload-image", uploadImageRoute);
 
 
 const app = express();
@@ -146,4 +143,4 @@ app.put("/api/contacts/:id/read", async (req, res) => {
 // ================== SERVER START ==================
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-import { v2 as cloudinary } from "cloudinary";
+
