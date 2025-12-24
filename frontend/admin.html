@@ -210,9 +210,10 @@ document.getElementById("projectForm").addEventListener("submit", async function
             this.reset();
             // Reset preview too
             const previewImage = document.getElementById("previewImage");
-            previewImage.style.display = "none";
-            previewImage.src = "";
-            loadAdminProjects();
+            if (previewImage) {
+             previewImage.style.display = "none";
+             previewImage.src = "";
+            }
         } else {
             alert("Error adding project.");
         }
