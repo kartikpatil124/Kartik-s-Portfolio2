@@ -1,403 +1,1809 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - KK Projects</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Kartik Patil</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="./css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Instrument+Serif:ital@0;1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-    .admin-container {
-        margin-top: 80px;
-        min-height: 100vh;
-        background: #f8f9fa;
-    }
-    .form-container {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
-    }
-    .projects-list, .contacts-list {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        margin-top: 2rem;
-    }
-    .logout-btn {
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 1000;
-    }
-    .message-card {
-        border-left: 4px solid #007bff;
-        transition: all 0.3s ease;
-    }
-    .message-card.unread {
-        border-left-color: #dc3545;
-        background-color: #f8f9fa;
-    }
-    .message-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-color: #ccff00;
+            --accent-glow: 0 0 20px rgba(204, 255, 0, 0.3);
+            --danger-color: #ff5050;
+            --folder-blue: #4a9eff;
+            --folder-orange: #ff8c42;
+        }
 
-    /* ============= NEW STYLES FOR IMAGE UPLOAD BOX ============= */
-    .upload-box {
-        width: 100%;
-        height: 130px;
-        border: 2px dashed #aaa;
-        border-radius: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #666;
-        cursor: pointer;
-        transition: 0.3s;
-        text-align: center;
-        padding: 10px;
-        font-size: 0.9rem;
-        background-color: #fdfdfd;
-        margin-top: 8px;
-    }
-    .upload-box:hover {
-        background: #f2f2f2;
-    }
-    .upload-box.dragover {
-        background: #e3ffe3;
-        border-color: #22aa22;
-        color: #22aa22;
-    }
-    #previewImage {
-        width: 100%;
-        margin-top: 10px;
-        border-radius: 10px;
-        object-fit: cover;
-        max-height: 220px;
-    }
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color) !important;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ---- Top Bar ---- */
+        .admin-topbar {
+            width: 90%;
+            margin: 20px auto;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .admin-topbar h1 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 28px;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .admin-topbar h1 span {
+            color: var(--accent-color);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 80, 80, 0.5);
+            color: #ff5050;
+            font-size: 14px;
+            padding: 8px 24px;
+            border-radius: 25px;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #ff5050;
+            color: black;
+            border-color: #ff5050;
+            box-shadow: 0 0 20px rgba(255, 80, 80, 0.3);
+        }
+
+        /* ---- Admin Container ---- */
+        .admin-container {
+            padding-top: 20px;
+            padding-bottom: 60px;
+            min-height: calc(100vh - 120px);
+        }
+
+        .page-title {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--text-primary);
+        }
+
+        .page-title span {
+            color: var(--accent-color);
+        }
+
+        /* ---- Glass Cards ---- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(204, 255, 0, 0.15);
+        }
+
+        .glass-card h3 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .glass-card h3 i {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+
+        /* ---- Form Controls ---- */
+        .form-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            background-color: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid var(--card-border) !important;
+            color: var(--text-primary) !important;
+            border-radius: 12px !important;
+            padding: 12px 16px;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 0 0.25rem rgba(204, 255, 0, 0.15) !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        .form-select option {
+            background-color: #1a1a1a;
+            color: var(--text-primary);
+        }
+
+        /* ---- Buttons ---- */
+        .btn-accent {
+            background: var(--accent-color);
+            color: #000;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-accent:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid rgba(255, 80, 80, 0.5);
+            color: #ff5050;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background: #ff5050;
+            color: #000;
+            border-color: #ff5050;
+        }
+
+        .btn-edit {
+            background: transparent;
+            border: 1px solid rgba(74, 158, 255, 0.5);
+            color: var(--folder-blue);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background: var(--folder-blue);
+            color: #000;
+            border-color: var(--folder-blue);
+        }
+
+        .btn-mark-read {
+            background: transparent;
+            border: 1px solid rgba(204, 255, 0, 0.5);
+            color: var(--accent-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-mark-read:hover {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        .btn-refresh {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .btn-refresh:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* ============================= */
+        /* ---- FOLDER CARDS ---- */
+        /* ============================= */
+        .folders-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .folders-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .folder-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .folder-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 24px 24px 0 0;
+            transition: all 0.4s ease;
+        }
+
+        .folder-card.projects-folder::before {
+            background: linear-gradient(90deg, var(--folder-blue), #7c5cfc);
+        }
+
+        .folder-card.messages-folder::before {
+            background: linear-gradient(90deg, var(--folder-orange), #ff5e7a);
+        }
+
+        .folder-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .folder-card.projects-folder:hover {
+            border-color: rgba(74, 158, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(74, 158, 255, 0.1);
+        }
+
+        .folder-card.messages-folder:hover {
+            border-color: rgba(255, 140, 66, 0.3);
+            box-shadow: 0 12px 40px rgba(255, 140, 66, 0.1);
+        }
+
+        .folder-card:hover::before {
+            height: 4px;
+        }
+
+        .folder-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .projects-folder .folder-icon {
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            color: var(--folder-blue);
+        }
+
+        .messages-folder .folder-icon {
+            background: rgba(255, 140, 66, 0.1);
+            border: 1px solid rgba(255, 140, 66, 0.2);
+            color: var(--folder-orange);
+        }
+
+        .folder-card:hover .folder-icon {
+            transform: scale(1.1);
+        }
+
+        .folder-card h3 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .folder-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .folder-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            padding: 0 10px;
+        }
+
+        .projects-folder .folder-count {
+            background: rgba(74, 158, 255, 0.15);
+            color: var(--folder-blue);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+        }
+
+        .messages-folder .folder-count {
+            background: rgba(255, 140, 66, 0.15);
+            color: var(--folder-orange);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+        }
+
+        .unread-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.3);
+            }
+        }
+
+        /* ---- Folder Content Panel ---- */
+        .folder-content-panel {
+            display: none;
+            animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .folder-content-panel.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-header h3 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .panel-header h3 i {
+            margin-right: 10px;
+        }
+
+        .projects-panel .panel-header h3 i {
+            color: var(--folder-blue);
+        }
+
+        .messages-panel .panel-header h3 i {
+            color: var(--folder-orange);
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-back:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* ---- Project Card (enhanced) ---- */
+        .admin-project-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-project-card:hover {
+            border-color: rgba(74, 158, 255, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .project-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .project-card-info {
+            flex: 1;
+        }
+
+        .project-card-info h5 {
+            margin: 0 0 6px 0;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .project-card-info p {
+            margin: 0 0 10px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .project-card-info .project-links {
+            margin-top: 8px;
+        }
+
+        .project-card-info .project-links a {
+            color: var(--folder-blue);
+            font-size: 0.82rem;
+            text-decoration: none;
+            margin-right: 16px;
+            transition: color 0.2s;
+        }
+
+        .project-card-info .project-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .project-card-info .project-links a i {
+            margin-right: 4px;
+        }
+
+        .project-card-thumb {
+            width: 90px;
+            height: 65px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--card-border);
+            flex-shrink: 0;
+        }
+
+        .project-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .badge {
+            background: rgba(204, 255, 0, 0.15) !important;
+            color: var(--accent-color) !important;
+            border: 1px solid rgba(204, 255, 0, 0.3);
+            font-weight: 500;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* ---- Message Card ---- */
+        .message-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-left: 3px solid var(--accent-color);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .message-card.unread {
+            border-left-color: #ff5050;
+            background: rgba(255, 80, 80, 0.03);
+        }
+
+        .message-card:hover {
+            border-color: rgba(255, 140, 66, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .message-card h5 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .message-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .message-card small {
+            color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .badge-read {
+            background: rgba(204, 255, 0, 0.15) !important;
+            color: var(--accent-color) !important;
+            border: 1px solid rgba(204, 255, 0, 0.3);
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        /* ---- Edit Modal ---- */
+        .edit-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-modal-overlay.active {
+            display: flex;
+        }
+
+        .edit-modal {
+            background: #111;
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .edit-modal h3 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .edit-modal h3 i {
+            color: var(--folder-blue);
+            margin-right: 10px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-save {
+            background: var(--accent-color);
+            color: #000;
+            font-weight: 700;
+            padding: 10px 28px;
+            border-radius: 25px;
+            border: none;
+            font-size: 14px;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background: #fff;
+            box-shadow: var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        /* ---- Toast ---- */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 11000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            background: #1a1a1a;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px 24px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            animation: toastIn 0.35s ease, toastOut 0.35s ease 2.5s forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-msg.success i {
+            color: var(--accent-color);
+        }
+
+        .toast-msg.error i {
+            color: var(--danger-color);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        /* Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--card-border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        small {
+            color: var(--text-secondary);
+        }
+
+        .text-muted {
+            color: var(--text-secondary) !important;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            gap: 12px;
+        }
+
+        .loading-spinner i {
+            animation: spin 1s linear infinite;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Search bar */
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+
+        /* ---- Image Upload Box ---- */
+        .upload-area {
+            margin-top: 8px;
+        }
+
+        .upload-box {
+            width: 100%;
+            min-height: 130px;
+            border: 2px dashed var(--card-border);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            gap: 8px;
+            position: relative;
+        }
+
+        .upload-box i {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .upload-box:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: rgba(204, 255, 0, 0.03);
+        }
+
+        .upload-box:hover i {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        .upload-box.dragover {
+            background: rgba(204, 255, 0, 0.06);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: scale(1.01);
+        }
+
+        .upload-box .upload-text {
+            font-size: 0.85rem;
+        }
+
+        .upload-box .upload-hint {
+            font-size: 0.75rem;
+            opacity: 0.5;
+        }
+
+        .upload-box input[type="file"] {
+            display: none;
+        }
+
+        .upload-preview {
+            width: 100%;
+            margin-top: 12px;
+            position: relative;
+            display: none;
+        }
+
+        .upload-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        .upload-preview .remove-preview {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 80, 80, 0.5);
+            color: #ff5050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .upload-preview .remove-preview:hover {
+            background: #ff5050;
+            color: #000;
+        }
+
+        .upload-or-divider {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin: 10px 0;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .uploading-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .uploading-bar .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #7c5cfc);
+            border-radius: 2px;
+            width: 0%;
+            animation: uploadProgress 2s ease-in-out infinite;
+        }
+
+        @keyframes uploadProgress {
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 80%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<button class="btn btn-danger logout-btn" onclick="logout()">Logout</button>
 
-<div class="admin-container">
-    <div class="container">
-        <h1 class="text-center mb-5 section-title">Admin Panel</h1>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    <div class="noise-overlay"></div>
 
-        <!-- Add Project Form -->
-        <div class="form-container">
-            <h3 class="mb-4">Add New Project</h3>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
-            <form id="projectForm">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Project Title</label>
-                        <input type="text" id="title" class="form-control" required>
+    <!-- Edit Modal -->
+    <div class="edit-modal-overlay" id="editModalOverlay">
+        <div class="edit-modal">
+            <h3><i class="fas fa-pen-to-square"></i> Edit Project</h3>
+            <input type="hidden" id="editProjectId">
+
+            <div class="mb-3">
+                <label class="form-label">Project Title</label>
+                <input type="text" id="editTitle" class="form-control" placeholder="Project Title" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea id="editDescription" rows="3" class="form-control" placeholder="Description"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Project Image</label>
+                <div class="upload-area">
+                    <div class="upload-box" id="editUploadBox">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        <span class="upload-text">Drag & drop an image or click to browse</span>
+                        <span class="upload-hint">Supports: JPG, PNG, GIF, WebP (max 10MB)</span>
+                        <input type="file" id="editFileInput" accept="image/*">
                     </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Category</label>
-                        <select class="form-select" id="categories" multiple required>
-                            <option value="html">HTML</option>
-                            <option value="css">CSS & Bootstrap</option>
-                            <option value="javascript">JavaScript</option>
-                            <option value="react">ReactJS</option>
-                            <option value="node">Node.JS</option>
-                        </select>
-                        <small>Hold Ctrl / Cmd to select multiple</small>
+                    <div class="uploading-bar" id="editUploadingBar">
+                        <div class="bar-fill"></div>
                     </div>
+                    <div class="upload-preview" id="editUploadPreview">
+                        <img id="editPreviewImg" src="" alt="Preview">
+                        <div class="remove-preview" onclick="removeEditPreview()"><i class="fas fa-xmark"></i></div>
+                    </div>
+                    <div class="upload-or-divider">— or paste a URL —</div>
+                    <input type="url" id="editImageUrl" class="form-control"
+                        placeholder="https://example.com/image.png">
                 </div>
+            </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Description</label>
-                    <textarea id="description" rows="3" class="form-control" required></textarea>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Project Link</label>
+                    <input type="url" id="editProjectLink" class="form-control" placeholder="https://...">
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Image URL</label>
-                        <!-- OLD INPUT (UNCHANGED) -->
-                        <input type="url" id="imageUrl" class="form-control" required>
-
-                        <!-- ========== NEW UPLOAD OPTIONS (ADDED) ========== -->
-                        
-                        
-                        <!-- ========== END NEW UPLOAD UI ========== -->
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Project Link</label>
-                        <input type="url" id="projectLink" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">GitHub Link</label>
-                        <input type="url" id="githubLink" class="form-control">
-                    </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">GitHub Link</label>
+                    <input type="url" id="editGithubLink" class="form-control" placeholder="https://github.com/...">
                 </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="editCategories" multiple>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS & Bootstrap</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="react">ReactJS</option>
+                        <option value="node">Node.JS</option>
+                    </select>
+                    <small>Hold Ctrl / Cmd to select multiple</small>
+                </div>
+            </div>
 
-                <button type="submit" class="btn btn-primary">Add Project</button>
-            </form>
-        </div>
-
-        <!-- Existing Projects -->
-        <div class="projects-list">
-            <h3 class="mb-4">Existing Projects</h3>
-            <div id="projectsList"></div>
-        </div>
-
-        <!-- Contact Messages -->
-        <div class="contacts-list mt-5">
-            <h3 class="mb-3">Contact Messages</h3>
-            <button class="btn btn-secondary btn-sm mb-3" onclick="loadContactMessages()">Refresh</button>
-            <div id="contactsList"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeEditModal()"><i class="fas fa-xmark me-1"></i> Cancel</button>
+                <button class="btn-save" onclick="saveEditProject()"><i class="fas fa-check me-1"></i> Save
+                    Changes</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Top Bar -->
+    <div class="admin-topbar">
+        <h1><span>//</span> Admin Panel</h1>
+        <button class="logout-btn" onclick="logout()"><i class="fas fa-arrow-right-from-bracket me-1"></i>
+            Logout</button>
+    </div>
 
-<script>
-// ========================
-// API BASE URL
-// ========================
-const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
+    <div class="admin-container">
+        <div class="container">
+            <h2 class="page-title">Manage Your <span>Portfolio</span></h2>
 
-// ========================
-// INITIAL LOAD
-// ========================
-document.addEventListener("DOMContentLoaded", () => {
-    loadAdminProjects();
-    loadContactMessages();
-});
+            <!-- Add Project Form -->
+            <div class="glass-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Project</h3>
 
-// ========================
-// ADD PROJECT
-// ========================
-document.getElementById("projectForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
+                <form id="projectForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Project Title</label>
+                            <input type="text" id="title" class="form-control" placeholder="e.g. My Awesome App"
+                                required>
+                        </div>
 
-    const selectedCategories = Array.from(
-        document.getElementById("categories").selectedOptions
-    ).map(o => o.value);
-
-    const newProject = {
-        title: title.value,
-        description: description.value,
-        imageUrl: imageUrl.value,          // uses URL or uploaded image URL
-        projectLink: projectLink.value,
-        githubLink: githubLink.value || "",
-        category: selectedCategories,
-    };
-
-    try {
-        const response = await fetch(`${API_BASE}/projects`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newProject),
-        });
-
-        const result = await response.json();
-
-        if (result._id) {
-            alert("Project added successfully!");
-            this.reset();
-            // Reset preview too
-            const previewImage = document.getElementById("previewImage");
-            if (previewImage) {
-             previewImage.style.display = "none";
-             previewImage.src = "";
-            }
-        } else {
-            alert("Error adding project.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Server error.");
-    }
-});
-
-// ========================
-// LOAD PROJECTS
-// ========================
-async function loadAdminProjects() {
-    try {
-        const response = await fetch(`${API_BASE}/projects`);
-        const projects = await response.json();
-        const list = document.getElementById("projectsList");
-
-        if (!projects.length) {
-            list.innerHTML = `<p class="text-muted">No projects added.</p>`;
-            return;
-        }
-
-        list.innerHTML = projects
-            .map(
-                (p) => `
-            <div class="card mb-3">
-                <div class="card-body d-flex justify-content-between">
-                    <div>
-                        <h5>${p.title}</h5>
-                        <p>${p.description}</p>
-                        <div>${renderCategoryBadges(p.category)}</div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="categories" multiple required>
+                                <option value="html">HTML</option>
+                                <option value="css">CSS & Bootstrap</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="react">ReactJS</option>
+                                <option value="node">Node.JS</option>
+                            </select>
+                            <small>Hold Ctrl / Cmd to select multiple</small>
+                        </div>
                     </div>
-                    <button class="btn btn-danger btn-sm" onclick="deleteProject('${p._id}')">Delete</button>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea id="description" rows="3" class="form-control" placeholder="Describe your project..."
+                            required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Project Image</label>
+                        <div class="upload-area">
+                            <div class="upload-box" id="addUploadBox">
+                                <i class="fas fa-cloud-arrow-up"></i>
+                                <span class="upload-text">Drag & drop an image here or click to browse</span>
+                                <span class="upload-hint">Supports: JPG, PNG, GIF, WebP (max 10MB)</span>
+                                <input type="file" id="addFileInput" accept="image/*">
+                            </div>
+                            <div class="uploading-bar" id="addUploadingBar">
+                                <div class="bar-fill"></div>
+                            </div>
+                            <div class="upload-preview" id="addUploadPreview">
+                                <img id="addPreviewImg" src="" alt="Preview">
+                                <div class="remove-preview" onclick="removeAddPreview()"><i class="fas fa-xmark"></i>
+                                </div>
+                            </div>
+                            <div class="upload-or-divider">— or paste a URL —</div>
+                            <input type="url" id="imageUrl" class="form-control"
+                                placeholder="https://example.com/image.png">
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Project Link</label>
+                            <input type="url" id="projectLink" class="form-control" placeholder="https://..." required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">GitHub Link</label>
+                            <input type="url" id="githubLink" class="form-control" placeholder="https://github.com/...">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-accent"><i class="fas fa-paper-plane me-1"></i> Add
+                        Project</button>
+                </form>
+            </div>
+
+            <!-- ====== FOLDER CARDS ====== -->
+            <div class="folders-grid" id="foldersGrid">
+                <!-- Projects Folder -->
+                <div class="folder-card projects-folder" onclick="openFolder('projects')" id="projectsFolderCard">
+                    <div class="folder-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h3>Existing Projects</h3>
+                    <p>View, edit and manage all your projects</p>
+                    <div class="folder-count" id="projectsCount">0</div>
+                </div>
+
+                <!-- Messages Folder -->
+                <div class="folder-card messages-folder" onclick="openFolder('messages')" id="messagesFolderCard">
+                    <div class="folder-icon">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </div>
+                    <h3>Contact Messages</h3>
+                    <p>Read and manage incoming messages</p>
+                    <div class="folder-count" id="messagesCount">0</div>
+                    <div class="unread-dot" id="unreadDot" style="display:none;"></div>
                 </div>
             </div>
-        `
-            )
-            .join("");
-    } catch (err) {
-        console.error("Error fetching projects:", err);
-    }
-}
 
-// ========================
-// DELETE PROJECT
-// ========================
-async function deleteProject(id) {
-    if (!confirm("Delete this project?")) return;
+            <!-- ====== PROJECTS PANEL ====== -->
+            <div class="folder-content-panel projects-panel glass-card" id="projectsPanel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-folder-open"></i> Existing Projects</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-refresh" onclick="loadAdminProjects()"><i
+                                class="fas fa-arrows-rotate me-1"></i> Refresh</button>
+                        <button class="btn-back" onclick="closeFolder('projects')"><i
+                                class="fas fa-arrow-left me-1"></i> Back</button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="form-control" id="projectSearch"
+                        placeholder="🔍  Search projects by title..." oninput="filterProjects()">
+                </div>
+                <div id="projectsList"></div>
+            </div>
 
-    try {
-        const response = await fetch(`${API_BASE}/projects/${id}`, {
-            method: "DELETE",
+            <!-- ====== MESSAGES PANEL ====== -->
+            <div class="folder-content-panel messages-panel glass-card" id="messagesPanel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-envelope-open-text"></i> Contact Messages</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-refresh" onclick="loadContactMessages()"><i
+                                class="fas fa-arrows-rotate me-1"></i> Refresh</button>
+                        <button class="btn-back" onclick="closeFolder('messages')"><i
+                                class="fas fa-arrow-left me-1"></i> Back</button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="form-control" id="messageSearch"
+                        placeholder="🔍  Search messages by name or email..." oninput="filterMessages()">
+                </div>
+                <div id="contactsList"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="k's.js"></script>
+
+    <script>
+        // ========================
+        // API BASE URL
+        // ========================
+        const API_BASE = "http://localhost:10000/api";
+
+        // ========================
+        // DATA CACHE
+        // ========================
+        let allProjects = [];
+        let allMessages = [];
+
+        // ========================
+        // TOAST NOTIFICATIONS
+        // ========================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-msg ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ========================
+        // INITIAL LOAD
+        // ========================
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAdminProjects();
+            loadContactMessages();
         });
 
-        const result = await response.json();
+        // ========================
+        // FOLDER TOGGLE
+        // ========================
+        function openFolder(type) {
+            const foldersGrid = document.getElementById('foldersGrid');
+            const projectsPanel = document.getElementById('projectsPanel');
+            const messagesPanel = document.getElementById('messagesPanel');
 
-        if (result.success) {
-            alert("Project deleted!");
-            loadAdminProjects();
-        } else {
-            alert("Delete failed.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Server error.");
-    }
-}
+            foldersGrid.style.display = 'none';
 
-// ========================
-// CATEGORY BADGES
-// ========================
-function renderCategoryBadges(category) {
-    const cats = Array.isArray(category) ? category : [category];
-    const names = {
-        html: "HTML",
-        css: "CSS & Bootstrap",
-        javascript: "JavaScript",
-        react: "ReactJS",
-        node: "Node.JS",
-    };
-
-    return cats.map((c) => `<span class="badge bg-primary me-1">${names[c] || c}</span>`).join("");
-}
-
-// ========================
-// CONTACT MESSAGES
-// ========================
-async function loadContactMessages() {
-    try {
-        const res = await fetch(`${API_BASE}/contacts`);
-        const messages = await res.json();
-        const container = document.getElementById("contactsList");
-
-        if (!messages.length) {
-            container.innerHTML = `<p class="text-muted">No messages yet.</p>`;
-            return;
+            if (type === 'projects') {
+                projectsPanel.classList.add('active');
+                messagesPanel.classList.remove('active');
+                loadAdminProjects();
+            } else {
+                messagesPanel.classList.add('active');
+                projectsPanel.classList.remove('active');
+                loadContactMessages();
+            }
         }
 
-        container.innerHTML = messages
-            .map(
-                (m) => `
-            <div class="card mb-3 message-card ${m.read ? "" : "unread"}" id="msg-${m._id}">
-                <div class="card-body">
-                    <h5>${m.name} (${m.email})</h5>
-                    <p>${m.message}</p>
-                    <small class="text-muted">${new Date(m.createdAt).toLocaleString()}</small>
+        function closeFolder(type) {
+            const foldersGrid = document.getElementById('foldersGrid');
+            const projectsPanel = document.getElementById('projectsPanel');
+            const messagesPanel = document.getElementById('messagesPanel');
+
+            foldersGrid.style.display = 'grid';
+            projectsPanel.classList.remove('active');
+            messagesPanel.classList.remove('active');
+        }
+
+        // ========================
+        // ADD PROJECT
+        // ========================
+        document.getElementById("projectForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const selectedCategories = Array.from(
+                document.getElementById("categories").selectedOptions
+            ).map(o => o.value);
+
+            const newProject = {
+                title: title.value,
+                description: description.value,
+                imageUrl: imageUrl.value,
+                projectLink: projectLink.value,
+                githubLink: githubLink.value || "",
+                category: selectedCategories,
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/projects`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newProject),
+                });
+
+                const result = await response.json();
+
+                if (result._id) {
+                    showToast("Project added successfully!");
+                    this.reset();
+                    const previewImage = document.getElementById("previewImage");
+                    if (previewImage) {
+                        previewImage.style.display = "none";
+                        previewImage.src = "";
+                    }
+                    loadAdminProjects();
+                } else {
+                    showToast("Error adding project.", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Server error.", "error");
+            }
+        });
+
+        // ========================
+        // LOAD PROJECTS
+        // ========================
+        async function loadAdminProjects() {
+            const list = document.getElementById("projectsList");
+            list.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading projects...</div>`;
+
+            try {
+                const response = await fetch(`${API_BASE}/projects`);
+                const projects = await response.json();
+                allProjects = projects;
+
+                // Update folder count
+                document.getElementById("projectsCount").textContent = `${projects.length} project${projects.length !== 1 ? 's' : ''}`;
+
+                if (!projects.length) {
+                    list.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open d-block"></i><p>No projects added yet.</p></div>`;
+                    return;
+                }
+
+                renderProjects(projects);
+            } catch (err) {
+                console.error("Error fetching projects:", err);
+                list.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle d-block"></i><p>Failed to load projects.</p></div>`;
+            }
+        }
+
+        function renderProjects(projects) {
+            const list = document.getElementById("projectsList");
+            list.innerHTML = projects.map((p) => `
+                <div class="admin-project-card" id="project-${p._id}">
+                    <div class="project-card-header">
+                        <div class="project-card-info">
+                            <h5>${escapeHtml(p.title)}</h5>
+                            <p>${escapeHtml(p.description || '')}</p>
+                            <div>${renderCategoryBadges(p.category)}</div>
+                            <div class="project-links">
+                                ${p.projectLink ? `<a href="${p.projectLink}" target="_blank"><i class="fas fa-external-link-alt"></i> Live</a>` : ''}
+                                ${p.githubLink ? `<a href="${p.githubLink}" target="_blank"><i class="fab fa-github"></i> GitHub</a>` : ''}
+                            </div>
+                        </div>
+                        ${p.imageUrl ? `<img src="${p.imageUrl}" class="project-card-thumb" alt="${escapeHtml(p.title)}">` : ''}
+                    </div>
+                    <div class="project-card-actions">
+                        <button class="btn-edit" onclick="openEditModal('${p._id}')"><i class="fas fa-pen me-1"></i> Edit</button>
+                        <button class="btn-delete" onclick="deleteProject('${p._id}')"><i class="fas fa-trash-can me-1"></i> Delete</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function filterProjects() {
+            const q = document.getElementById("projectSearch").value.toLowerCase();
+            const filtered = allProjects.filter(p => p.title.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
+            renderProjects(filtered);
+        }
+
+        // ========================
+        // EDIT PROJECT MODAL
+        // ========================
+        function openEditModal(id) {
+            const project = allProjects.find(p => p._id === id);
+            if (!project) return;
+
+            document.getElementById("editProjectId").value = id;
+            document.getElementById("editTitle").value = project.title || '';
+            document.getElementById("editDescription").value = project.description || '';
+            document.getElementById("editImageUrl").value = project.imageUrl || '';
+            document.getElementById("editProjectLink").value = project.projectLink || '';
+            document.getElementById("editGithubLink").value = project.githubLink || '';
+
+            // Set selected categories
+            const select = document.getElementById("editCategories");
+            const cats = Array.isArray(project.category) ? project.category : [];
+            Array.from(select.options).forEach(opt => {
+                opt.selected = cats.includes(opt.value);
+            });
+
+            document.getElementById("editModalOverlay").classList.add("active");
+        }
+
+        function closeEditModal() {
+            document.getElementById("editModalOverlay").classList.remove("active");
+        }
+
+        async function saveEditProject() {
+            const id = document.getElementById("editProjectId").value;
+            const selectedCategories = Array.from(
+                document.getElementById("editCategories").selectedOptions
+            ).map(o => o.value);
+
+            const updatedData = {
+                title: document.getElementById("editTitle").value,
+                description: document.getElementById("editDescription").value,
+                imageUrl: document.getElementById("editImageUrl").value,
+                projectLink: document.getElementById("editProjectLink").value,
+                githubLink: document.getElementById("editGithubLink").value,
+                category: selectedCategories,
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/projects/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedData),
+                });
+
+                const result = await res.json();
+
+                if (result._id) {
+                    showToast("Project updated successfully!");
+                    closeEditModal();
+                    loadAdminProjects();
+                } else {
+                    showToast("Update failed.", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Server error.", "error");
+            }
+        }
+
+        // Close modal on overlay click
+        document.getElementById("editModalOverlay").addEventListener("click", function (e) {
+            if (e.target === this) closeEditModal();
+        });
+
+        // ========================
+        // DELETE PROJECT
+        // ========================
+        async function deleteProject(id) {
+            if (!confirm("Delete this project?")) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/projects/${id}`, {
+                    method: "DELETE",
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast("Project deleted!");
+                    const el = document.getElementById(`project-${id}`);
+                    if (el) {
+                        el.style.transition = 'all 0.3s ease';
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            el.remove();
+                            loadAdminProjects();
+                        }, 300);
+                    } else {
+                        loadAdminProjects();
+                    }
+                } else {
+                    showToast("Delete failed.", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Server error.", "error");
+            }
+        }
+
+        // ========================
+        // CATEGORY BADGES
+        // ========================
+        function renderCategoryBadges(category) {
+            const cats = Array.isArray(category) ? category : [category];
+            const names = {
+                html: "HTML",
+                css: "CSS & Bootstrap",
+                javascript: "JavaScript",
+                react: "ReactJS",
+                node: "Node.JS",
+            };
+
+            return cats.map((c) => `<span class="badge me-1">${names[c] || c}</span>`).join("");
+        }
+
+        // ========================
+        // CONTACT MESSAGES
+        // ========================
+        async function loadContactMessages() {
+            const container = document.getElementById("contactsList");
+            container.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading messages...</div>`;
+
+            try {
+                const res = await fetch(`${API_BASE}/contacts`);
+                const messages = await res.json();
+                allMessages = messages;
+
+                // Update folder count
+                const unreadCount = messages.filter(m => !m.read).length;
+                document.getElementById("messagesCount").textContent = `${messages.length} message${messages.length !== 1 ? 's' : ''}`;
+
+                // Show unread dot
+                const unreadDot = document.getElementById("unreadDot");
+                unreadDot.style.display = unreadCount > 0 ? 'block' : 'none';
+
+                if (!messages.length) {
+                    container.innerHTML = `<div class="empty-state"><i class="fas fa-envelope d-block"></i><p>No messages yet.</p></div>`;
+                    return;
+                }
+
+                renderMessages(messages);
+            } catch (err) {
+                console.error("Error loading messages:", err);
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle d-block"></i><p>Failed to load messages.</p></div>`;
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById("contactsList");
+            container.innerHTML = messages.map((m) => `
+                <div class="message-card ${m.read ? "" : "unread"}" id="msg-${m._id}">
+                    <h5>${escapeHtml(m.name)} <span style="color: var(--text-secondary); font-weight: 400;">(${escapeHtml(m.email)})</span></h5>
+                    <p>${escapeHtml(m.message)}</p>
+                    <small>${new Date(m.createdAt).toLocaleString()}</small>
 
                     <div class="mt-2">
-                        ${
-                            m.read
-                                ? `<span class="badge bg-success">Read</span>`
-                                : `<button class="btn btn-success btn-sm" onclick="markAsRead('${m._id}')">Mark Read</button>`
-                        }
-                        <button class="btn btn-danger btn-sm ms-2" onclick="deleteContact('${m._id}')">Delete</button>
+                        ${m.read
+                    ? `<span class="badge-read">✓ Read</span>`
+                    : `<button class="btn-mark-read" onclick="markAsRead('${m._id}')"><i class="fas fa-check me-1"></i> Mark Read</button>`
+                }
+                        <button class="btn-delete ms-2" onclick="deleteContact('${m._id}')"><i class="fas fa-trash-can me-1"></i> Delete</button>
                     </div>
                 </div>
-            </div>
-        `
-            )
-            .join("");
-    } catch (err) {
-        console.error("Error loading messages:", err);
-    }
-}
-
-async function markAsRead(id) {
-    await fetch(`${API_BASE}/contacts/${id}/read`, { method: "PUT" });
-    loadContactMessages();
-}
-
-async function deleteContact(id) {
-    if (!confirm("Delete this message?")) return;
-    await fetch(`${API_BASE}/contacts/${id}`, { method: "DELETE" });
-    const el = document.getElementById(`msg-${id}`);
-    if (el) el.remove();
-}
-
-// ========================
-// LOGOUT
-// ========================
-function logout() {
-    window.location.href = "index.html";
-}
-
-// =====================================================
-// NEW: CLOUDINARY IMAGE UPLOAD (FILE + DRAG & DROP)
-// =====================================================
-
-// ✏️ REPLACE THESE WITH YOUR REAL CLOUDINARY VALUES
-
-// Drag over
-
-
-async function uploadImageToCloudinary(file) {
-    try {
-        const formData = new FormData();
-        formData.append("image", file);
-
-        const res = await fetch(
-            "https://portfolio-backend1-0061.onrender.com/api/upload-image",
-            {
-                method: "POST",
-                body: formData
-            }
-        );
-
-        const data = await res.json();
-
-        if (data.secure_url) {
-            previewImage.src = data.secure_url;
-            previewImage.style.display = "block";
-            imageUrlInput.value = data.secure_url;
-        } else {
-            alert("Upload failed");
-            console.error(data);
+            `).join("");
         }
-    } catch (err) {
-        console.error("Upload error:", err);
-        alert("Image upload error");
-    }
-}
 
-</script>
+        function filterMessages() {
+            const q = document.getElementById("messageSearch").value.toLowerCase();
+            const filtered = allMessages.filter(m =>
+                m.name.toLowerCase().includes(q) ||
+                m.email.toLowerCase().includes(q) ||
+                m.message.toLowerCase().includes(q)
+            );
+            renderMessages(filtered);
+        }
+
+        async function markAsRead(id) {
+            try {
+                await fetch(`${API_BASE}/contacts/${id}/read`, { method: "PUT" });
+                showToast("Message marked as read");
+                loadContactMessages();
+            } catch (err) {
+                showToast("Failed to mark as read.", "error");
+            }
+        }
+
+        async function deleteContact(id) {
+            if (!confirm("Delete this message?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/contacts/${id}`, { method: "DELETE" });
+                const result = await res.json();
+                if (result.success) {
+                    showToast("Message deleted!");
+                    const el = document.getElementById(`msg-${id}`);
+                    if (el) {
+                        el.style.transition = 'all 0.3s ease';
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            el.remove();
+                            loadContactMessages();
+                        }, 300);
+                    } else {
+                        loadContactMessages();
+                    }
+                } else {
+                    showToast("Delete failed.", "error");
+                }
+            } catch (err) {
+                showToast("Server error.", "error");
+            }
+        }
+
+        // ========================
+        // UTILITY
+        // ========================
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ========================
+        // LOGOUT
+        // ========================
+        function logout() {
+            window.location.href = "index.html";
+        }
+
+        // =====================================================
+        // IMAGE UPLOAD (FILE + DRAG & DROP)
+        // =====================================================
+
+        async function uploadImageFile(file, targetUrlInput, previewImg, previewContainer, loadingBar) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('Image must be under 10MB', 'error');
+                return;
+            }
+
+            // Show loading
+            if (loadingBar) loadingBar.style.display = 'block';
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const res = await fetch(`${API_BASE}/upload-image`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (data.secure_url || data.url) {
+                    const url = data.secure_url || data.url;
+                    if (targetUrlInput) targetUrlInput.value = url;
+                    if (previewImg) {
+                        previewImg.src = url;
+                        previewContainer.style.display = 'block';
+                    }
+                    showToast('Image uploaded successfully!');
+                } else {
+                    showToast('Upload failed', 'error');
+                    console.error(data);
+                }
+            } catch (err) {
+                console.error('Upload error:', err);
+                showToast('Image upload error', 'error');
+            } finally {
+                if (loadingBar) loadingBar.style.display = 'none';
+            }
+        }
+
+        // ---- ADD FORM: Upload Box Setup ----
+        function setupUploadBox(boxId, fileInputId, urlInputId, previewImgId, previewContainerId, loadingBarId) {
+            const box = document.getElementById(boxId);
+            const fileInput = document.getElementById(fileInputId);
+            const urlInput = document.getElementById(urlInputId);
+            const previewImg = document.getElementById(previewImgId);
+            const previewContainer = document.getElementById(previewContainerId);
+            const loadingBar = document.getElementById(loadingBarId);
+
+            if (!box || !fileInput) return;
+
+            // Click to open file dialog
+            box.addEventListener('click', () => fileInput.click());
+
+            // File selected
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    uploadImageFile(e.target.files[0], urlInput, previewImg, previewContainer, loadingBar);
+                }
+            });
+
+            // Drag & Drop
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.classList.add('dragover');
+            });
+            box.addEventListener('dragleave', () => {
+                box.classList.remove('dragover');
+            });
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    uploadImageFile(e.dataTransfer.files[0], urlInput, previewImg, previewContainer, loadingBar);
+                }
+            });
+        }
+
+        // Initialize upload boxes
+        document.addEventListener('DOMContentLoaded', () => {
+            setupUploadBox('addUploadBox', 'addFileInput', 'imageUrl', 'addPreviewImg', 'addUploadPreview', 'addUploadingBar');
+            setupUploadBox('editUploadBox', 'editFileInput', 'editImageUrl', 'editPreviewImg', 'editUploadPreview', 'editUploadingBar');
+        });
+
+        // Remove preview helpers
+        function removeAddPreview() {
+            document.getElementById('addPreviewImg').src = '';
+            document.getElementById('addUploadPreview').style.display = 'none';
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('addFileInput').value = '';
+        }
+
+        function removeEditPreview() {
+            document.getElementById('editPreviewImg').src = '';
+            document.getElementById('editUploadPreview').style.display = 'none';
+            document.getElementById('editImageUrl').value = '';
+            document.getElementById('editFileInput').value = '';
+        }
+
+    </script>
 
 </body>
+
 </html>

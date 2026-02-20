@@ -1,7 +1,7 @@
 // ======================
 // API Base URL
 // ======================
-const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
+const API_BASE = "http://localhost:10000/api";
 
 // ======================
 // Global State
@@ -12,6 +12,7 @@ let projects = [];
 // Initialize
 // ======================
 document.addEventListener("DOMContentLoaded", () => {
+  showLoadingSkeleton();
   loadProjects();
   setupEventListeners();
 });
@@ -36,6 +37,37 @@ function setupEventListeners() {
 }
 
 // ======================
+// Loading Skeleton
+// ======================
+function showLoadingSkeleton() {
+  const projectsGrid = document.getElementById("projectsGrid");
+  if (!projectsGrid) return;
+
+  const skeletonCard = `
+    <div class="col-lg-4 col-md-6">
+      <div class="project-card skeleton-card" style="overflow:hidden;">
+        <div style="width:100%;height:200px;background:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:12px 12px 0 0;"></div>
+        <div class="project-content" style="padding:1.2rem;">
+          <div style="width:60%;height:14px;background:rgba(255,255,255,0.06);border-radius:8px;margin-bottom:12px;animation:shimmer 1.5s infinite;background-size:200% 100%;background-image:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);"></div>
+          <div style="width:80%;height:20px;background:rgba(255,255,255,0.06);border-radius:8px;margin-bottom:10px;animation:shimmer 1.5s infinite;background-size:200% 100%;background-image:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);"></div>
+          <div style="width:100%;height:14px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;animation:shimmer 1.5s infinite;background-size:200% 100%;background-image:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);"></div>
+          <div style="width:70%;height:14px;background:rgba(255,255,255,0.04);border-radius:8px;animation:shimmer 1.5s infinite;background-size:200% 100%;background-image:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);"></div>
+        </div>
+      </div>
+    </div>`;
+
+  projectsGrid.innerHTML = skeletonCard.repeat(6);
+
+  // Inject shimmer animation if not already present
+  if (!document.getElementById("shimmer-style")) {
+    const style = document.createElement("style");
+    style.id = "shimmer-style";
+    style.textContent = `@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`;
+    document.head.appendChild(style);
+  }
+}
+
+// ======================
 // Load Projects (FIXED)
 // ======================
 async function loadProjects() {
@@ -45,6 +77,16 @@ async function loadProjects() {
     displayProjects(projects);
   } catch (error) {
     console.error("Error loading projects:", error);
+    const projectsGrid = document.getElementById("projectsGrid");
+    if (projectsGrid) {
+      projectsGrid.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <h4 class="no-projects-text" style="color:#ff5050;">Failed to load projects</h4>
+          <p class="no-projects-text">Please check if the backend server is running.</p>
+          <button onclick="showLoadingSkeleton();loadProjects();" class="btn btn-outline-light mt-3">Retry</button>
+        </div>
+      `;
+    }
   }
 }
 
@@ -74,7 +116,8 @@ function displayProjects(projectsToShow) {
         <div class="col-lg-4 col-md-6" data-category="${cats.join(",")}">
           <div class="project-card">
               <img src="${project.imageUrl || "https://via.placeholder.com/400x250"}"
-                  class="project-image">
+                  class="project-image" loading="lazy"
+                  onerror="this.src='https://via.placeholder.com/400x250?text=Image+Not+Found'">
 
               <div class="project-content">
                   <div class="mb-2">${renderCategoryBadges(project.category)}</div>

@@ -2,6 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 
 
@@ -15,6 +18,31 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// ================= UPLOADS FOLDER ==================
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+app.use("/uploads", express.static(uploadsDir));
+
+// ================= MULTER CONFIG ==================
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp|svg/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    if (ext && mime) cb(null, true);
+    else cb(new Error("Only image files are allowed"));
+  }
+});
 
 // ================= MongoDB Connection ==================
 mongoose
@@ -129,6 +157,28 @@ app.get("/api/contacts", async (req, res) => {
 });
 
 
+// ================== UPDATE PROJECT ==================
+app.put("/api/projects/:id", async (req, res) => {
+  try {
+    const updated = await Project.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+        projectLink: req.body.projectLink,
+        githubLink: req.body.githubLink,
+        category: req.body.category || []
+      },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Update failed" });
+  }
+});
+
+
 // ================== MARK MESSAGE AS READ ==================
 app.put("/api/contacts/:id/read", async (req, res) => {
   try {
@@ -136,6 +186,30 @@ app.put("/api/contacts/:id/read", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: "Update failed" });
+  }
+});
+
+
+// ================== DELETE CONTACT MESSAGE ==================
+app.delete("/api/contacts/:id", async (req, res) => {
+  try {
+    await Contact.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Delete failed" });
+  }
+});
+
+
+// ================== UPLOAD IMAGE ==================
+app.post("/api/upload-image", upload.single("image"), (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    res.json({ success: true, secure_url: imageUrl, url: imageUrl });
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ error: "Upload failed" });
   }
 });
 
