@@ -1,7 +1,7 @@
 // ======================
 // API Base URL
 // ======================
-const API_BASE = "http://localhost:10000/api";
+const API_BASE = "https://portfolio-backend1-0061.onrender.com/api";
 
 // ======================
 // Global State
