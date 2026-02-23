@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 
 
@@ -19,21 +21,49 @@ app.use(cors({
 
 app.use(express.json());
 
-// ================= UPLOADS FOLDER ==================
+// ================= UPLOADS FOLDER (LOCAL FALLBACK) ==================
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 app.use("/uploads", express.static(uploadsDir));
 
+// ================= CLOUDINARY CONFIG ==================
+const useCloudinary = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+
+if (useCloudinary) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  console.log("☁️  Cloudinary configured (permanent image hosting)");
+} else {
+  console.log("📁 Using local disk storage for uploads (set CLOUDINARY_* env vars for cloud hosting)");
+}
+
 // ================= MULTER CONFIG ==================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
-    cb(null, uniqueName);
-  }
-});
+let uploadStorage;
+
+if (useCloudinary) {
+  uploadStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: "portfolio-projects",
+      allowed_formats: ["jpg", "jpeg", "png", "gif", "webp", "svg"],
+      transformation: [{ width: 800, height: 500, crop: "limit", quality: "auto" }],
+    },
+  });
+} else {
+  uploadStorage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadsDir),
+    filename: (req, file, cb) => {
+      const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
+      cb(null, uniqueName);
+    }
+  });
+}
+
 const upload = multer({
-  storage,
+  storage: uploadStorage,
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = /jpeg|jpg|png|gif|webp|svg/;
@@ -205,7 +235,16 @@ app.delete("/api/contacts/:id", async (req, res) => {
 app.post("/api/upload-image", upload.single("image"), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
+    let imageUrl;
+    if (useCloudinary) {
+      // Cloudinary stores the URL in req.file.path
+      imageUrl = req.file.path;
+    } else {
+      // Local storage
+      imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    }
+
     res.json({ success: true, secure_url: imageUrl, url: imageUrl });
   } catch (err) {
     console.error("Upload error:", err);
