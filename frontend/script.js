@@ -115,9 +115,9 @@ function displayProjects(projectsToShow) {
       return `
         <div class="col-lg-4 col-md-6" data-category="${cats.join(",")}">
           <div class="project-card">
-              <img src="${project.imageUrl || "https://via.placeholder.com/400x250"}"
+              <img src="${project.imageUrl || "https://placehold.co/400x250/1a1a2e/ffffff?text=No+Image"}"
                   class="project-image" loading="lazy"
-                  onerror="this.src='https://via.placeholder.com/400x250?text=Image+Not+Found'">
+                  onerror="this.onerror=null;this.src='https://placehold.co/400x250/1a1a2e/ffffff?text=Image+Not+Found'">
 
               <div class="project-content">
                   <div class="mb-2">${renderCategoryBadges(project.category)}</div>
