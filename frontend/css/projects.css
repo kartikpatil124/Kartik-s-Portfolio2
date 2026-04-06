@@ -247,3 +247,47 @@
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* Specific Mobile Fixes (320px - 480px) */
+@media (max-width: 480px) {
+  #projectsGrid {
+    grid-template-columns: 1fr !important; /* Force single column */
+    padding: 0 16px !important;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+    margin-bottom: var(--space-lg);
+    text-align: center;
+  }
+
+  .search-input {
+    padding-left: 56px !important; /* Increased to ensure no icon overlap */
+    font-size: 16px !important; /* Mobile standard */
+  }
+
+  .project-content {
+    padding: 20px 16px !important; /* Increase internal padding */
+  }
+
+  .project-title {
+    font-size: 1.4rem;
+  }
+
+  .project-description {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: var(--space-lg);
+  }
+
+  .btn-filter {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 44px;
+  }
+
+  .project-link {
+    min-height: 48px !important; /* Extra touch target size */
+    font-size: 13px;
+  }
+}

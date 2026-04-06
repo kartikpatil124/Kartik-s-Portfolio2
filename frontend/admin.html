@@ -1107,6 +1107,103 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2.2rem !important;
+                margin-bottom: 25px !important;
+                text-align: center;
+            }
+
+            .glass-card {
+                padding: 1.25rem !important;
+                margin-bottom: 1.5rem !important;
+                border-radius: 16px;
+            }
+
+            .form-label {
+                font-size: 14px !important; /* Mobile standard */
+                margin-bottom: 8px !important;
+            }
+
+            .form-control, .form-select {
+                min-height: 48px !important; /* Enhanced touch target */
+                font-size: 16px !important; /* Prevents iOS auto-zoom */
+            }
+
+            /* Optimize category selection for touch */
+            select[multiple] {
+                min-height: 120px !important;
+                padding: 10px !important;
+            }
+
+            select[multiple] option {
+                padding: 10px 12px !important;
+                margin-bottom: 4px;
+                border-radius: 8px;
+            }
+
+            .folders-grid {
+                gap: 16px !important;
+                grid-template-columns: 1fr !important;
+            }
+
+            .folder-card {
+                padding: 1.8rem 1rem !important;
+                border-radius: 20px !important;
+            }
+
+            .folder-icon {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.5rem !important;
+                margin-bottom: 0.8rem !important;
+            }
+
+            .btn-accent, .btn-refresh, .logout-btn, .btn-save, .btn-cancel {
+                min-height: 48px !important;
+                width: 100% !important;
+                margin-bottom: 12px;
+                font-size: 15px !important;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .admin-project-card {
+                flex-direction: column !important;
+                padding: 1.25rem !important;
+                gap: 15px;
+            }
+
+            .project-card-info {
+                width: 100%;
+                text-align: left;
+            }
+
+            .project-card-thumb {
+                width: 100% !important;
+                height: 180px !important;
+                margin: 0 0 10px 0 !important;
+            }
+
+            .project-card-actions {
+                width: 100% !important;
+                justify-content: space-between !important;
+                gap: 10px !important;
+            }
+
+            .project-card-actions .btn-edit, 
+            .project-card-actions .btn-delete {
+                flex: 1;
+                min-height: 44px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
         @media (min-width: 768px) {
             .bottom-nav {
                 display: none !important;

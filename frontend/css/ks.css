@@ -204,3 +204,30 @@ main {
   opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
+
+/* Specific Mobile Fixes (320px - 480px) */
+@media (max-width: 480px) {
+  .box1 {
+    justify-content: center; /* Center vertically */
+    text-align: center; /* Center horizontally as requested */
+  }
+
+  .box1 p {
+    font-size: 1.3rem; 
+    line-height: 1.5; /* Mobile body standard */
+  }
+
+  .box3 a pre {
+    font-size: 1.2rem;
+    padding: var(--space-md) 0; /* Increase touch target */
+    display: block;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .box6 {
+    gap: var(--space-md); 
+  }
+}

@@ -150,3 +150,40 @@ body { padding-bottom: calc(80px + var(--safe-bottom)); }
 @media (min-width: 768px) {
   body { padding-bottom: 0; }
 }
+
+/* Specific Mobile Fixes (320px - 480px) */
+@media (max-width: 480px) {
+  .hero {
+    text-align: center;
+    padding: 80px 16px 40px; /* Standardize edge spacing */
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+    line-height: 1.1; /* Standardize line height */
+  }
+  
+  .dev h1 {
+    font-size: 2.5rem;
+  }
+
+  .dev p {
+    letter-spacing: 0.2rem;
+    font-size: 0.7rem;
+  }
+
+  .desc {
+    padding: 0 16px !important; /* Ensure no edge touching */
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center; /* Center bio as well for mobile flow */
+  }
+
+  .info-box {
+    padding: 16px !important;
+  }
+
+  .info-box h2 {
+    font-size: 1.5rem;
+  }
+}

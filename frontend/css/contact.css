@@ -145,3 +145,74 @@
   color: #000;
   transform: translateY(-4px);
 }
+
+/* Specific Mobile Fixes (320px - 480px) */
+@media (max-width: 480px) {
+  .hero-section {
+    text-align: center;
+    padding: 80px 16px 40px;
+  }
+
+  .contact-container {
+    border-radius: 0; /* Full bleed feel */
+    margin: 0;
+    border: none;
+  }
+
+  .contact-left, .contact-right {
+    padding: 24px 16px !important; 
+    width: 100% !important;
+  }
+
+  .contact-header h1 {
+    font-size: 2.2rem;
+    text-align: center;
+  }
+
+  .contact-header p {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .contact-item {
+    gap: 16px;
+    padding: 16px !important;
+    min-height: 48px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .contact-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  .form-control {
+    width: 100% !important;
+    font-size: 16px !important; /* Mobile standard */
+    margin-bottom: 20px !important; /* Increase spacing */
+    min-height: 48px;
+  }
+
+  .btn-send {
+    width: 100% !important;
+    min-height: 48px !important;
+    padding: 14px !important;
+  }
+
+  .contact-details h3 {
+    font-size: 1.1rem;
+  }
+
+  .social-links {
+    margin-top: 32px;
+  }
+
+  .social-link {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+}

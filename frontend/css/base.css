@@ -168,3 +168,53 @@ p { font-size: 16px; color: var(--text-muted); }
 .p-md { padding: var(--space-md); }
 .m-md { margin: var(--space-md); }
 .text-accent { color: var(--accent); }
+
+/* Global Mobile Safety (320px - 480px) */
+@media (max-width: 480px) {
+  body {
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100%;
+  }
+  
+  * {
+    box-sizing: border-box !important;
+  }
+  
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    object-fit: cover;
+  }
+}
+
+/* Floating Admin Button (Mobile Only) */
+.admin-fab {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .admin-fab {
+    display: flex;
+    position: fixed;
+    bottom: 85px; /* Above the bottom nav */
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), var(--accent-glow);
+    z-index: 2001;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .admin-fab:active {
+    transform: scale(0.9) rotate(-10deg);
+  }
+}
