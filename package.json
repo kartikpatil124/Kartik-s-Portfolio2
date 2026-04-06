@@ -1,0 +1,13 @@
+{
+  "name": "kartik-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Kartik Patil - Full Stack Developer Portfolio",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "backend": "cd backend && npm run dev",
+    "install:all": "cd frontend && npm install && cd ../backend && npm install"
+  }
+}
