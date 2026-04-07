@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
-/* ===== Design Tokens ===== */
 :root {
-  --bg: #050505;
-  --surface: rgba(255, 255, 255, 0.03);
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #ffffff;
-  --text-muted: #a0a0a0;
-  --accent: #ccff00;
-  --accent-glow: 0 0 20px rgba(204, 255, 0, 0.4);
+  --bg-strong: #0f0c29;
+  --bg-mid: #302b63;
+  --bg-soft: #24243e;
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.2);
+  --text: #f7f7fb;
+  --text-muted: rgba(238, 239, 255, 0.72);
+  --accent: #b5ff6d;
+  --accent-glow: 0 16px 48px rgba(181, 255, 109, 0.18);
+  --accent-shadow: 0 16px 48px rgba(181, 255, 109, 0.18);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ===== Global Reset ===== */
 * {
   margin: 0;
   padding: 0;
@@ -25,46 +27,72 @@ html {
 }
 
 body {
-  background-color: var(--bg);
+  background:
+    radial-gradient(circle at top, rgba(181, 255, 109, 0.12), transparent 24%),
+    linear-gradient(135deg, var(--bg-strong) 0%, var(--bg-mid) 50%, var(--bg-soft) 100%);
   color: var(--text);
-  font-family: var(--font-outfit), sans-serif;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 16px;
   min-height: 100vh;
   overflow-x: hidden;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== Selection ===== */
-::selection {
-  background: rgba(204, 255, 0, 0.3);
-  color: #fff;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/* ===== Scrollbar ===== */
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(181, 255, 109, 0.32);
+  color: var(--bg-strong);
+}
+
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-track { background: rgba(8, 8, 25, 0.4); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* ===== Glassmorphism Utility ===== */
-.glass {
-  background: var(--surface);
+.glass,
+.glass-panel {
+  background: linear-gradient(180deg, var(--surface), rgba(255, 255, 255, 0.06));
   border: 1px solid var(--border);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 24px 60px rgba(8, 8, 25, 0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-/* ===== Noise Overlay ===== */
 .noise-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9998;
-  opacity: 0.03;
+  z-index: 50;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* ===== Skill Marquee ===== */
+.hero-glow {
+  background:
+    radial-gradient(circle at top left, rgba(122, 190, 255, 0.18), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(181, 255, 109, 0.14), transparent 32%);
+}
+
+.section-shell {
+  scroll-margin-top: 6.5rem;
+}
+
+.marquee-shell {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
+
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -73,38 +101,30 @@ body {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 30s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 
 .marquee-track:hover {
   animation-play-state: paused;
 }
 
-/* ===== Loading Screen ===== */
-.loading-screen {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media (max-width: 640px) {
+  .section-shell {
+    scroll-margin-top: 5.5rem;
+  }
 }
 
-@keyframes pulse-logo {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 1; }
-}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-/* ===== Shimmer (Skeleton) ===== */
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, #121212 25%, #1a1a1a 50%, #121212 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 12px;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

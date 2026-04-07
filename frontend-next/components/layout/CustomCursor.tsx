@@ -1,37 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 export default function CustomCursor() {
-  const [isVisible, setIsVisible] = useState(false);
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
   const followerX = useSpring(cursorX, { stiffness: 300, damping: 30 });
   const followerY = useSpring(cursorY, { stiffness: 300, damping: 30 });
+  const isDesktop = useMediaQuery("(min-width: 1025px)");
+  const hasFinePointer = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const isVisible = isDesktop && hasFinePointer && !prefersReducedMotion;
+
+  const handleMouseMove = useEffectEvent((event: MouseEvent) => {
+    cursorX.set(event.clientX);
+    cursorY.set(event.clientY);
+  });
 
   useEffect(() => {
-    // Only show on non-touch devices
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouchDevice) return;
-
-    setIsVisible(true);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-    };
+    if (!isVisible) {
+      return;
+    }
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [cursorX, cursorY]);
+  }, [isVisible, cursorX, cursorY]);
 
   if (!isVisible) return null;
 
   return (
     <>
       <motion.div
-        className="fixed w-5 h-5 border border-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        className="pointer-events-none fixed z-[145] h-8 w-8 rounded-full border border-white/55 mix-blend-difference"
         style={{
           x: cursorX,
           y: cursorY,
@@ -40,7 +43,7 @@ export default function CustomCursor() {
         }}
       />
       <motion.div
-        className="fixed w-2 h-2 bg-[var(--accent)] rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        className="pointer-events-none fixed z-[145] h-2.5 w-2.5 rounded-full bg-[var(--accent)] mix-blend-difference"
         style={{
           x: followerX,
           y: followerY,
